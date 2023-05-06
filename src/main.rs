@@ -10,7 +10,7 @@ use tower_http::cors::{Any, CorsLayer};
 #[tokio::main]
 async fn main() {
     let cors = CorsLayer::new()
-        .allow_methods([Method::GET])
+        .allow_methods([Method::GET, Method::POST])
         .allow_origin(Any);
 
     let app = Router::new()
