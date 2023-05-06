@@ -19,7 +19,7 @@ async fn main() {
         .route("/square/:number", get(handlers::square::get))
         .route("/sum", get(handlers::sum::get_query))
         .route("/sum", post(handlers::sum::post))
-        .route("/sum/:first_number/:second_number", get(handlers::sum::get))
+        .route("/sum/:first/:second", get(handlers::sum::get))
         .route("/user-agent", get(handlers::header::get_user_agent))
         .layer(cors);
 
