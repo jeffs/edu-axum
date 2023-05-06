@@ -1,1 +1,1 @@
-curl -v -HFoo:world -Ss localhost:3000/header/Foo
+curl -Ss -HFoo:world -Ss localhost:3000/header/Foo
