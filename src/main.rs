@@ -3,8 +3,9 @@ mod handlers;
 use axum::{
     http::Method,
     routing::{get, post},
-    Router,
+    Extension, Router,
 };
+use handlers::state::State;
 use tower_http::cors::{Any, CorsLayer};
 
 #[tokio::main]
@@ -17,10 +18,12 @@ async fn main() {
         .route("/", get(|| async { "Hello, world." }))
         .route("/header/:name", get(handlers::header::get))
         .route("/square/:number", get(handlers::square::get))
+        .route("/shared", get(handlers::state::get_shared))
         .route("/sum", get(handlers::sum::get_query))
         .route("/sum", post(handlers::sum::post))
         .route("/sum/:first/:second", get(handlers::sum::get))
         .route("/user-agent", get(handlers::header::get_user_agent))
+        .layer(Extension(State::arc()))
         .layer(cors);
 
     axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
