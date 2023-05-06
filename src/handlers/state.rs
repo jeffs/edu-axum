@@ -1,21 +1,22 @@
-use std::sync::Arc;
+use std::sync::{
+    atomic::{AtomicUsize, Ordering::Relaxed},
+    Arc,
+};
 
 use axum::Extension;
-use tokio::sync::Mutex;
 
-#[derive(Clone, Default)]
 pub struct State {
-    pub count: usize,
+    pub next: AtomicUsize,
 }
 
 impl State {
-    pub fn arc() -> Arc<Mutex<State>> {
-        Arc::new(Mutex::from(State::default()))
+    pub fn arc() -> Arc<State> {
+        Arc::new(State {
+            next: AtomicUsize::new(1),
+        })
     }
 }
 
-pub async fn get_shared(Extension(state): Extension<Arc<Mutex<State>>>) -> String {
-    let mut state = state.lock().await;
-    state.count += 1;
-    state.count.to_string()
+pub async fn get_shared(Extension(state): Extension<Arc<State>>) -> String {
+    state.next.fetch_add(1, Relaxed).to_string()
 }
